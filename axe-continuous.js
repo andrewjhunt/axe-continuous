@@ -17,14 +17,14 @@ const axeOptions = {
 }
 
 function runAxe(node) {
-	console.log("running the Axe scan", node)
+	console.debug("running the Axe scan", node)
 
 	setTimeout(() => {
 		axe.run(node, axeOptions, (err, results) => {
 			if (err) throw err
 
 			if (!results.violations.length) {
-				console.log("No violations found")
+				console.debug("No violations found")
 				if (true) {
 					Toastify({
 						text: "OK",
@@ -48,7 +48,7 @@ function runAxe(node) {
 				// console.warn("doc", v.helpUrl)
 
 				v.nodes.forEach((node, idx) => {
-					// console.log(node.target)
+					// console.debug(node.target)
 					document.querySelectorAll(node.target).forEach(node => {
 						// node.style.border = `solid 1px ${colorMap[v.impact]}`
 						console.warn(idx, `Axe ${v.impact}`, node)
@@ -99,7 +99,7 @@ function delayRun(newCommonAncestor) {
 	if (lastTimeoutId)
 		clearTimeout(lastTimeoutId)
 
-	if (commonAncestor) console.log(`finding common ancestor with the queued items`)
+	if (commonAncestor) console.debug(`finding common ancestor with the queued items`)
 
 	commonAncestor = commonAncestor
 		? findCommonAncestor([newCommonAncestor], [commonAncestor])
@@ -131,7 +131,7 @@ function axeContinuous(root, delay = axeDelayMsec) {
 			}
 		});
 
-		console.log(`${affectedNodes.length} nodes changed`)
+		console.debug(`${affectedNodes.length} nodes changed`)
 
 		const commonAncestor = findCommonAncestor(affectedNodes);
 
@@ -151,4 +151,4 @@ function axeContinuous(root, delay = axeDelayMsec) {
 	})
 }
 
-
+console.debug("axe-continuous loaded")
