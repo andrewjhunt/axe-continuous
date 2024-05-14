@@ -55,10 +55,17 @@ Include the following in the `<head>`.
   <script src="/path/to/script/axe-continuous.js"></script>
 ```
 
-Identify the element at the top of the tree that will be scanned.  May be `document` or any element.
+`axeContinuous` accepts a DOM `Node` that identifies the element at the top of the tree to be scanned. Examples:
 
 ```
-  const id = "element-id"
-  const el = document.getElementById(id)
-  axeContinuous(el)
+  // Body element (don't use this with Toast because it creates a loop of change/scan/Toast/change...)
+  axeContinuous(document.body)
+
+  // Root element found by id
+  const node = document.getElementById("element-id")
+  axeContinuous(node)
+
+  // First node with this class name
+  const node = document.querySelector(".scan-these-elements")[0]
+  axeContinuous(node)
 ```
