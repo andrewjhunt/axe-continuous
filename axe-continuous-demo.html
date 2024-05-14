@@ -4,10 +4,6 @@
 <head>
 	<title>axe-continuous demo</title>
 
-	<script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
-	<!-- <script src="https://cdn.jsdelivr.net/gh/andrewjhunt/axe-continuous@main/axe-continuous.js"></script> -->
-	<script src="./axe-continuous.js"></script>
-
 	<style>
 		* {
 			font-family: Helvetica, sans-serif;
@@ -107,7 +103,7 @@
 				</svg>
 			</img>
 
-			<p>Uploaded to: SVG Repo</p>
+			<p>From SVG Repo</p>
 			<hr/>
 
 			<img>
@@ -214,48 +210,34 @@
 
 
 
-	<!-- Axe continuous starts here -->
+	<!-- Axe continuous loading starts here -->
+
+	<script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/andrewjhunt/axe-continuous@main/axe-continuous.js"></script>
+	<!-- <script src="./axe-continuous.js"></script> -->
 
 	<script>
-
-		function handleAxeScan(issuesFound, axeReport) {
-			if (!issuesFound)
-				console.debug("Axe scan result: 0 violations found")
-
-			else {
-				const numNodes = axeReport.violations.reduce((acc, cur) => acc + cur.nodes.length, 0)
-
-				console.log(" ")
-				console.warn(`Axe scan result: ${axeReport.violations.length} violations affecting ${numNodes} nodes`)
-
-				axeReport.violations.forEach((v,idx) => {
-					console.log(`Violation ${idx+1}: ${v.help}`)
-					console.log(`   How to fix: ${v.helpUrl}`)
-					console.log(`   Affects ${v.nodes.length} nodes...`)
-					v.nodes.forEach((node, idx) => {
-						console.log(`   ${idx}`, document.querySelector(node.target[0])) 
-					})
-				})
-			}
+		function startAxeContinuous() {
+			axeContinuous.start(
+				document.querySelector(".axe-scan-here"),
+				250,
+				{
+					runOnly: {
+						values: ["wcag2a", "wcag2aa"],
+					},
+					reporter: "v2",
+					performanceTimer: false
+				},
+				axeContinuous.reportConsoleLog,
+				false
+			)
+			console.log("Running axeContinuous")
 		}
 
-
-		axeContinuous(
-			document.querySelector(".axe-scan-here"),
-			250,
-			{
-				runOnly: {
-					values: ['wcag2a', 'wcag2aa'],
-				},
-				reporter: "v2",
-				// enable to get performance statistics
-				performanceTimer: false
-			},
-			handleAxeScan
-		)
-
-		console.log("axe-continuous accessibility scanning enabled")
-
+		if (document.readyState === "complete")
+			startAxeContinuous()
+		else
+			document.addEventListener("DOMContentLoaded", startAxeContinuous)
 	</script>
 </body>
 
