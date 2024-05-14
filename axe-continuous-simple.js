@@ -1,22 +1,5 @@
 // Single JavaScript file that sets up axe-continuous with report output to console
 
-function startAxeContinuous() {
-  axeContinuous.start(
-    document.querySelector(".axe-scan-here"),
-    250,
-    {
-      runOnly: {
-        values: ["wcag2a", "wcag2aa"],
-      },
-      reporter: "v2",
-      performanceTimer: false
-    },
-    axeContinuous.reportConsoleLog,
-    false
-  )
-  console.log("axeContinuous is running")
-}
-
 function loadScript(url, onloadFunc) {
   const scriptEl = document.createElement("script")
   document.body.append(scriptEl)
@@ -33,8 +16,12 @@ loadScript(
   "https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js", 
   () => {
     loadScript(
-      "https://www.musios.app/axe-continuous/axe-continuous.js",
-      () => startAxeContinuous()
+      "./axe-continuous.js",
+      // "https://www.musios.app/axe-continuous/axe-continuous.js",
+      () => {
+        axeContinuous.start()
+        console.log("axeContinuous is running")
+      }
     )
   }
 )

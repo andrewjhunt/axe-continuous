@@ -2,8 +2,8 @@
 <html>
 
 <head>
-	
-	<!-- 
+
+  <!-- 
 		This is a simple demo of axe-continuous which is a wrapper around the 
 		axe-core API that scans for accessibility issues during dynamic usage.
 
@@ -13,122 +13,121 @@
 		License MIT 2.0
 	-->
 
-	<title>axe-continuous demo</title>
+  <title>axe-continuous demo</title>
 
-	<style>
-		* {
-			font-family: Helvetica, sans-serif;
-			color: black;
-		}
-		body {
-			background: #f0f0f0;
-			margin: 0px;
-			padding: 20px;
-		}
-		.container {
-			margin-top: 20px;
-			display: flex;
-			flex-wrap: wrap;
-		}
-		.sample-box {
-			display: none;
-			width: 20%;
-			margin: 10px 1%;
-			padding: 6px;
-			border: solid 1px black;
-		}
-	</style>
+  <style>
+    * {
+      font-family: Helvetica, sans-serif;
+      color: black;
+    }
+
+    body {
+      background: #f0f0f0;
+      margin: 0px;
+      padding: 20px;
+    }
+
+    .container {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sample-box {
+      display: none;
+      width: 20%;
+      margin: 10px 1%;
+      padding: 6px;
+      border: solid 1px black;
+    }
+  </style>
 </head>
 
 <body class="axe-scan-here">
-	
-	<h1>axe-continuous demo</h1>
-	<p>Open the browser console to view accessiblity issue reports.</p>
 
-	<div>
-		<button onclick="reveal(false)">Reveal</button>
-		<button onclick="reveal(true)">Reveal all</button>
-		<button onclick="restart()">Restart</button>
-	</div>
+  <h1>axe-continuous demo</h1>
+  <p>Open the browser console to view accessiblity issue reports.</p>
 
-	<div class="container">
+  <div>
+    <button onclick="reveal(false)">Reveal</button>
+    <button onclick="reveal(true)">Reveal all</button>
+    <button onclick="restart()">Restart</button>
+  </div>
 
-		<div class="sample-box">
-			<h4>Font sizes</h4>
-			<hr/>
+  <div class="container">
 
-			<h1>H1 header 1</h1>
-			<h2>H2 header 2</h2>
-			<h3>H3 header 3</h3>
-			<h4>H4 header 4</h4>
-			<h5>H5 header 5</h5>
-			<h6>H6 header 6</h6>
+    <div class="sample-box">
+      <h4>Font sizes</h4>
+      <hr />
 
-			<p >body size</p>
-			<p style="font-size:smaller">smaller</p>
-			<p style="font-size:small">small</p>
-			<p style="font-size:x-small">x-small</p>
-			<p style="font-size:xx-small">xx-small</p>
-		</div>
+      <h1>H1 header 1</h1>
+      <h2>H2 header 2</h2>
+      <h3>H3 header 3</h3>
+      <h4>H4 header 4</h4>
+      <h5>H5 header 5</h5>
+      <h6>H6 header 6</h6>
 
-		<div class="sample-box">
-			<h4>Contrast</h4>
-			<hr/>
-			<p style="color: rgba(0,0,0, 1.0)">Black</p>
-			<p style="color: rgba(0,0,0, 0.9)">10% transparency</p>
-			<p style="color: rgba(0,0,0, 0.8)">20% transparency</p>
-			<p style="color: rgba(0,0,0, 0.7)">30% transparency</p>
-			<p style="color: rgba(0,0,0, 0.6)">40% transparency</p>
-			<p style="color: rgba(0,0,0, 0.5)">50% transparency</p>
-			<p style="color: rgba(0,0,0, 0.4)">60% transparency</p>
-			<p style="color: rgba(0,0,0, 0.3)">70% transparency</p>
-			<p style="color: rgba(0,0,0, 0.3)">80% transparency</p>
-			<p style="color: rgba(0,0,0, 0.2)">90% transparency</p>
-			<p style="color: rgba(0,0,0, 0.0)">100% transparency</p>
-		</div>
+      <p>body size</p>
+      <p style="font-size:smaller">smaller</p>
+      <p style="font-size:small">small</p>
+      <p style="font-size:x-small">x-small</p>
+      <p style="font-size:xx-small">xx-small</p>
+    </div>
 
-		<div class="sample-box">
-			<h4>Bad forms</h4>
-			<hr/>
-			<form>
-				No label:
-				<input placeholder="hard to read?"></input>
-				<br/>
-				<input type="checkbox"></input>
-			</form>
-		</div>
+    <div class="sample-box">
+      <h4>Contrast</h4>
+      <hr />
+      <p style="color: rgba(0,0,0, 1.0)">Black</p>
+      <p style="color: rgba(0,0,0, 0.9)">10% transparency</p>
+      <p style="color: rgba(0,0,0, 0.8)">20% transparency</p>
+      <p style="color: rgba(0,0,0, 0.7)">30% transparency</p>
+      <p style="color: rgba(0,0,0, 0.6)">40% transparency</p>
+      <p style="color: rgba(0,0,0, 0.5)">50% transparency</p>
+      <p style="color: rgba(0,0,0, 0.4)">60% transparency</p>
+      <p style="color: rgba(0,0,0, 0.3)">70% transparency</p>
+      <p style="color: rgba(0,0,0, 0.3)">80% transparency</p>
+      <p style="color: rgba(0,0,0, 0.2)">90% transparency</p>
+      <p style="color: rgba(0,0,0, 0.0)">100% transparency</p>
+    </div>
 
-		<div class="sample-box">
-			<h4>Bad image labelling</h4>
-			<hr/>
+    <div class="sample-box">
+      <h4>Bad forms</h4>
+      <hr />
+      <form>
+        No label:
+        <input placeholder="hard to read?"></input>
+        <br />
+        <input type="checkbox"></input>
+      </form>
+    </div>
 
-			<img>
-				<svg height="50px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-					<path
-							d="M6.50003 5.50003L7.50003 6.50003L8.50003 5.50003C9.05231 4.94774 9.94774 4.94774 
+    <div class="sample-box">
+      <h4>Bad image labelling</h4>
+      <hr />
+
+      <img>
+      <svg height="50px" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+        <path d="M6.50003 5.50003L7.50003 6.50003L8.50003 5.50003C9.05231 4.94774 9.94774 4.94774 
 							10.5 5.50003C11.0523 6.05231 11.0523 6.94774 
 							10.5 7.50003L7.50003 10.5L4.50003 7.50003C3.94774 6.94774 3.94774 6.05231 
-							4.50003 5.50003C5.05231 4.94774 5.94774 4.94774 6.50003 5.50003Z"
-							stroke="#000000" />
-				</svg>
-			</img>
+							4.50003 5.50003C5.05231 4.94774 5.94774 4.94774 6.50003 5.50003Z" stroke="#000000" />
+      </svg>
+      </img>
 
-			<p>From SVG Repo</p>
-			<hr/>
+      <p>From SVG Repo</p>
+      <hr />
 
-			<img>
-				<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-				 	width="90%" viewBox="0 0 1252.000000 1280.000000"
-					preserveAspectRatio="xMidYMid meet">
-						<!--
+      <img>
+      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="90%" viewBox="0 0 1252.000000 1280.000000"
+        preserveAspectRatio="xMidYMid meet">
+        <!--
 						<metadata>
 						Created by potrace 1.15, written by Peter Selinger 2001-2017
 						</metadata>
 						-->
-						<g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
-						fill="#000000" stroke="none">
-						<path d="M10215 12765 c-25 -110 -88 -276 -166 -435 -144 -294 -178 -417 -165
+        <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+          <path d="M10215 12765 c-25 -110 -88 -276 -166 -435 -144 -294 -178 -417 -165
 						-592 l7 -88 -49 0 c-59 0 -136 -22 -164 -47 -12 -11 -22 -14 -25 -7 -12 33
 						-148 268 -221 379 -107 164 -194 276 -302 389 -86 89 -200 185 -200 168 0 -5
 						7 -29 16 -53 30 -85 53 -238 69 -455 18 -258 35 -372 71 -486 43 -136 105
@@ -170,15 +169,15 @@
 						67 140 15 122 7 227 -21 285 -30 62 -116 122 -450 313 -91 51 -167 95 -169 97
 						-1 2 4 14 13 27 17 24 20 55 9 83 -15 42 -193 137 -373 201 -37 13 -65 28 -64
 						36 1 7 26 87 57 178 64 190 85 291 94 445 9 168 -23 419 -66 517 l-19 43 -7
-						-30z"/>
-			 		</g>
-			 </svg>
-			</img>
-			<p>Image by Peter Selinger under CC0</p>
+						-30z" />
+        </g>
+      </svg>
+      </img>
+      <p>Image by Peter Selinger under CC0</p>
 
-			</div>
+    </div>
 
-			<!-- No issues on weight 
+    <!-- No issues on weight 
 			<div class="sample-box">
 				<h4>Font weights</h4>
 				<hr/>
@@ -196,65 +195,77 @@
 			</div>
 			-->
 
-		</div>
+  </div>
 
 
-	</div>
+  </div>
 
-	<script>
-		function reveal(all) {
-			let done = false
-			document.querySelectorAll(".sample-box").forEach(sampleBox => {
-				if (all || (!done && sampleBox.style.display !== "inline-block")) {
-					sampleBox.style.display = "inline-block"
-					done = true
-				}
-			})
-		}
+  <script>
+    function reveal(all) {
+      let done = false
+      document.querySelectorAll(".sample-box").forEach(sampleBox => {
+        if (all || (!done && sampleBox.style.display !== "inline-block")) {
+          sampleBox.style.display = "inline-block"
+          done = true
+        }
+      })
+    }
 
-		function restart() {
-			document.querySelectorAll(".sample-box").forEach(sampleBox => {
-				sampleBox.style.display = "none"
-			})
-		}
-	</script>
-
-
-	<!-- Axe continuous loading with a simple script -->
-
-	<script src="axe-continuous-simple.js"></script>
+    function restart() {
+      document.querySelectorAll(".sample-box").forEach(sampleBox => {
+        sampleBox.style.display = "none"
+      })
+    }
+  </script>
 
 
-	<!-- Axe continuous loading with more developer control -->
+  <!-- Axe continuous loading with a simple script -->
 
-	<!--
-	<script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
-	<script src="https://www.musios.app/axe-continuous/axe-continuous.js"></script>
+  <script>
+    const axeContinuousOptions = {
+      selectors: [".axe-scan-here"],
+      axeDelayMsec: 250
+    }
 
-	<script>
-		function startAxeContinuous() {
-			axeContinuous.start(
-				document.querySelector(".axe-scan-here"),
-				250,
-				{
-					runOnly: {
-						values: ["wcag2a", "wcag2aa"],
-					},
-					reporter: "v2",
-					performanceTimer: false
-				},
-				axeContinuous.reportConsoleLog,
-				false
-			)
-			console.log("Running axeContinuous")
-		}
+    const axeOptions = {
+      runOnly: {
+        values: ["wcag2a", "wcag2aa"],
+      },
+      reporter: "v2",
+      performanceTimer: false
+    }
+  </script>
 
-		if (document.readyState === "complete")
-			startAxeContinuous()
-		else
-			document.addEventListener("DOMContentLoaded", startAxeContinuous)
-	</script>
-	-->
+  <!-- <script src="./axe-continuous-simple.js"></script> -->
+
+  <!-- Axe continuous loading with more developer control -->
+  <script>
+    function startAxeContinuous() {
+      console.log(axeContinuous)
+      axeContinuous.updateAxeContinuousOptions({
+        selectors: [".axe-scan-here"],
+        // queueTimeMsec: 250,           
+        // scanCompleteCallback: axeContinuous.reportConsoleLog,
+        // debug: false,
+      })
+
+      // All options are optional. axe-core provides strong defaults
+      axeContinuous.updateAxeOptions({
+        runOnly: {
+          values: ['wcag2a', 'wcag2aa', 'section508', 'section508.22.n'],
+        },
+        // reporter: "v2",
+        // performanceTimer: false
+      })
+
+      axeContinuous.start()
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
+  <!-- <script onload="startAxeContinuous()" src="https://www.musios.app/axe-continuous/axe-continuous.js"></script> -->
+  <script onload="startAxeContinuous()" src="./axe-continuous.js"></script>
+  </script>
 </body>
 
 </html>

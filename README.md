@@ -14,11 +14,24 @@ The purpose of wrapping the tool is:
 
 The "simple" packaging is the easiest way to get going. Add this script to your HTML pages.
 
-```
+`axeContinuousOptions` defines how the `axeContinuous` should operate. At a minimum, replace the selector with one or many CSS selectors to identify what parts of the document should be scanned. An element name, id, or class name are most useful.
+
+`axeOptions` defines how the `axe-core` should be configured. Axe defaults are strong so it's ok to leave this out.
+
+```html
+  <script>
+    const axeContinuousOptions = {
+      selectors: ["body", "#id", ".axe-scan-here"]
+    }
+    const axeOptions = {
+      // any options for axe.run() - see below
+    }
+  </script>
+
   <script src="https://www.musios.app/axe-continuous/axe-continuous-simple.js"></script>
 ```
 
-It does the following:
+The simple all-in-one package does the following:
 
 1. Loads the scripts for `axe-continuous` and `axe-core`
 2. Starts `axe-continuous` configured to write output to the browser console
@@ -26,8 +39,25 @@ It does the following:
 
 Just open the browser and watch the scans each time content on the page changes.
 
-It does persist onto the next. Instead process repeats.
+It does NOT persist onto the next page. If the next page is configured the same way, then the process repeats.
 
+
+## On-demand scan
+
+Perform a scan any time by running this in the browser console with any 
+
+```JS
+// Full document scan
+axeContinuous.runAxe(document)
+
+// Other examples
+axeContinuous.runAxe("body")
+axeContinuous.runAxe("#id")
+axeContinuous.runAxe(".class-selector")
+
+// Or pass a Node or NodeList
+axeContinuous.runAxe(document.body.firstChild)
+```
 
 # Usage - developer version
 
@@ -37,25 +67,25 @@ The version below provides more control over usage.
 
 Include the following in the `<head>`.  
 
-```
+```html
   <script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
   <script src="https://www.musios.app/axe-continuous/axe-continuous.js"></script>
 ```
 
 If you are modifying `axe-continuous` then replace the script link by the following with your path:
 
-```
+```html
   <script src="/path/to/script/axe-continuous.js"></script>
 ```
 
 
 ## Start continuous scanning
 
-`axeContinuous(node, queueTimeMsec, axeOptions, scanCompleteCallback)`
+`axeContinuous(selectors, queueTimeMsec, axeOptions, scanCompleteCallback)`
 
-*Param 1* `node`
+*Param 1* `selectors`
 
-> Pass the DOM `Node` that identifies the element at the top of the tree to be scanned.
+> Pass an array containing any number of CSS selectors that identify elements to be scanned. A common usage is to put an ID on the root element to be scanned.
 
 *Param 2* `queueTimeMsec`
 
@@ -91,20 +121,31 @@ This can be replaced by screen content, JSON logging, popups, or whatever is eas
 
 ```html
 <script>
-  axeContinuous.start(
-    document.querySelector(".axe-scan-here"),  // node (what to scan)
-    250,                                       // queueTimeMsec
-    {                                          // axeOptions
-      runOnly: {
-        values: ['wcag2a', 'wcag2aa'],
-      },
-      reporter: "v2", // enable to get performance statistics
-      performanceTimer: false
-    },
-    axeContinuous.reportConsoleLog,           // callback for scan results
-    false                                     // axe continuous debug
-  )
-</script>
+  <!-- Axe continuous loading with more developer control -->
+  <script>
+    function startAxeContinuous() {
+      axeContinuous.updateAxeContinuousOptions({
+        selectors: [".axe-scan-here"],
+        // queueTimeMsec: 250,           
+        // scanCompleteCallback: axeContinuous.reportConsoleLog,
+        // debug: false,
+      })
+
+      // axe-core configuration. axe-core defaults apply.
+      axeContinuous.updateAxeOptions({
+        // runOnly: {
+        //   values: ['wcag2a', 'wcag2aa', 'section508', 'section508.22.n'],
+        // },
+        // reporter: "v2",
+        // performanceTimer: false
+      })
+
+      axeContinuous.start()
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
+  <script onload="startAxeContinuous()" src="https://www.musios.app/axe-continuous/axe-continuous.js"></script>
 ```
 
 
@@ -138,8 +179,63 @@ So, the design principles are:
 
 ## Issues / Improvements
 
-* Allow multiple selectors to be passed
 * Add a JSON collector which can be downloaded
-* The batching process would be better the timer was the maximum wait time in the queue
+* Add screenshots with WebRTC getDisplayMedia API
+* The batching process would be better if the timer was the maximum wait time in the queue
 * By the time the user reads the results, the issue may be gone from the page (not sure there's anything else to do here)
-* Perhaps somebody can create a screen grab of elements with issues
+* Capture deeper DOM properties like the source file.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Screen Part</title>
+</head>
+<body>
+    <button onclick="captureScreen()">Capture Screen</button>
+    <canvas id="canvas" style="display:none;"></canvas> <!-- Hidden canvas -->
+    <img id="screenshot" style="border: 1px solid black;"/>
+    <script>
+        async function captureScreen() {
+            try {
+                // Request screen capture
+                const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true
+                });
+
+                // Reference to video element (not added to the DOM to keep it invisible)
+                const video = document.createElement('video');
+                video.srcObject = mediaStream;
+                video.play();
+
+                // Draw the video frame to canvas once it's playing
+                video.onloadedmetadata = () => {
+                    const canvas = document.getElementById('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    // Stop all video streams
+                    video.srcObject.getTracks().forEach(track => track.stop());
+
+                    // Extract a portion of the canvas (e.g., top-left quarter)
+                    const img = document.getElementById('screenshot');
+                    img.src = canvas.toDataURL(); // Display as an image on the page
+
+                    // Optionally, extract just the top left quarter
+                    const topLeftWidth = canvas.width / 2;
+                    const topLeftHeight = canvas.height / 2;
+                    img.src = ctx.getImageData(0, 0, topLeftWidth, topLeftHeight).data; // Adjust as needed for specific dimensions
+                };
+            } catch (err) {
+                console.error('Error: ' + err);
+            }
+        }
+    </script>
+</body>
+</html>
+```

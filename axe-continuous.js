@@ -4,31 +4,40 @@
 // Copyright Andrew Hunt 2024
 // License MIT 2.0
 
-
-const options = {}
-let axeDebug = false
-let commonAncestor = null
-let lastTimeoutId = null
-
-
-
 axeContinuous = {
+  
+  options: {},
+  axeOptions: {},
+
+  // managing the queue
+  commonAncestor: null,
+  lastTimeoutId: null,
+
+  updateAxeContinuousOptions(opts) {
+    axeContinuous.options = {...axeContinuous.options, ...opts}
+
+		if (!axeContinuous.options.selectors) throw new Error(`no selectors provided`)
+    if (!axeContinuous.options.scanCompleteCallback) throw new Error(`no callback provided`)
+  },
+
+  updateAxeOptions(opts) {
+    axeContinuous.axeOptions = {...axeContinuous.axeOptions, ...opts}
+  },
 
 	runAxe(node) {
-		if (axeDebug) console.debug("running the Axe scan", node)
+		if (axeContinuous.options.axeDebug) console.debug("running the Axe scan", node)
 
 		setTimeout(() => {
-			axe.run(node, options.axeOptions, (err, results) => {
+			axe.run(node, axeContinuous.axeOptions, (err, results) => {
 				if (err) {
 					console.error(err)
 					throw err
 				}
 
-				options.scanCompleteCallback(results.violations.length > 0, results)
+				axeContinuous.options.scanCompleteCallback(results.violations.length > 0, results)
 			})
 		})
 	},
-
 
 	findCommonAncestor(nodes) {
 		if (nodes.length < 2) return nodes[0] || null;
@@ -55,67 +64,23 @@ axeContinuous = {
 
 
 	delayRun(newCommonAncestor) {
-		if (lastTimeoutId)
-			clearTimeout(lastTimeoutId)
+		if (axeContinuous.lastTimeoutId)
+			clearTimeout(axeContinuous.lastTimeoutId)
 
-		if (commonAncestor && axeDebug) console.debug(`finding common ancestor with the queued items`)
+		if (axeContinuous.commonAncestor && axeContinuous.options.axeDebug) 
+      console.debug(`finding common ancestor with the queued items`)
 
-		commonAncestor = commonAncestor
-			? axeContinuous.findCommonAncestor([newCommonAncestor], [commonAncestor])
+		axeContinuous.commonAncestor = axeContinuous.commonAncestor
+			? axeContinuous.findCommonAncestor([newCommonAncestor], [axeContinuous.commonAncestor])
 			: newCommonAncestor
 
-		lastTimeoutId = setTimeout(() => {
-			lastTimeoutId = null
-			const _commonAncestor = commonAncestor
-			commonAncestor = null
+    axeContinuous.lastTimeoutId = setTimeout(() => {
+			axeContinuous.lastTimeoutId = null
+			const _commonAncestor = axeContinuous.commonAncestor
+			axeContinuous.commonAncestor = null
 
 			axeContinuous.runAxe(_commonAncestor)
-		}, options.axeDelayMsec)
-	},
-
-
-	start(root, axeDelayMsec, axeOptions, scanCompleteCallback, debug=false) {
-		if (!root) throw new Error(`node is not valid Node or NodeList`)
-
-		axeDebug = debug
-		options.axeDelayMsec = axeDelayMsec
-		options.axeOptions = axeOptions
-		options.scanCompleteCallback = scanCompleteCallback
-
-		// Setup the MutationObserver
-		const observer = new MutationObserver(mutations => {
-			let affectedNodes = [];
-
-			mutations.forEach(mutation => {
-				if (mutation.type === 'childList') {
-					affectedNodes.push(...mutation.addedNodes);
-					affectedNodes.push(...mutation.removedNodes);
-				} else if (mutation.type === 'attributes') {
-					affectedNodes.push(mutation.target);
-				}
-			});
-
-			if (axeDebug) console.debug(`${affectedNodes.length} nodes changed`)
-
-			const commonAncestor = axeContinuous.findCommonAncestor(affectedNodes);
-
-			axeContinuous.delayRun(commonAncestor)
-		});
-
-
-		if (root instanceof Node) root = [root]
-
-		root.forEach(node => {
-			if (axeDebug) console.debug("attaching", node)
-			// Start observing the document body for changes
-			observer.observe(node, {
-				childList: true,
-				subtree: true,
-				attributes: true
-			});
-
-			axeContinuous.delayRun(node)
-		})
+		}, axeContinuous.options.axeDelayMsec)
 	},
 
 
@@ -181,5 +146,70 @@ axeContinuous = {
 
 			})
 		}
+	},
+
+
+	// start(root, axeDelayMsec, axeOptions, scanCompleteCallback, debug=false) {
+	start() {
+		const observer = new MutationObserver(mutations => {
+			let affectedNodes = [];
+
+			mutations.forEach(mutation => {
+				if (mutation.type === 'childList') {
+					affectedNodes.push(...mutation.addedNodes);
+					affectedNodes.push(...mutation.removedNodes);
+				} else if (mutation.type === 'attributes') {
+					affectedNodes.push(mutation.target);
+				}
+			});
+
+			if (axeContinuous.options.axeDebug) console.debug(`${affectedNodes.length} nodes changed`)
+
+			const commonAncestor = axeContinuous.findCommonAncestor(affectedNodes);
+
+			axeContinuous.delayRun(commonAncestor)
+		});
+
+    // Start observing the document body for changes
+    console.log("axeContinuous.options.selectors", axeContinuous.options.selectors)
+
+		axeContinuous.options.selectors.forEach(selector => {
+			if (axeContinuous.options.axeDebug) console.debug("attaching", selector)
+      
+      const nodes = document.querySelectorAll(selector)
+      console.log(selector, nodes)
+      
+      if (nodes) {
+        nodes.forEach(node => {
+          observer.observe(node, {
+            childList: true,
+            subtree: true,
+            attributes: true
+          })
+
+          // Kick off the first scan
+  			  axeContinuous.delayRun(node)
+        })
+      }
+		})
 	}
 }
+
+
+// Load options based on (a) defaults and (b) opts provided by loader
+axeContinuous.updateAxeContinuousOptions({
+  ...{
+    selectors: [],
+    queueTimeMsec: 250,
+    scanCompleteCallback: axeContinuous.reportConsoleLog,
+    debug: false
+  },
+  ...axeContinuousOptions
+})
+
+// Load axe-core options provided by loader (if any)
+// Axe provides strong default options
+axeContinuous.updateAxeOptions( axeOptions )
+
+
+console.log("axeContinuous.options", axeContinuous.options)
