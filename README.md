@@ -59,6 +59,21 @@ axeContinuous.runAxe(".class-selector")
 axeContinuous.runAxe(document.body.firstChild)
 ```
 
+# Demo page
+
+Steps for continuous scanning:
+
+1. Visit the [axe-continuous demo page](https://www.musios.app/axe-continuous/axe-continuous-demo.html)
+2. Open the browser console
+3. Use the "reveal" and "reveal all" buttons to add content that may include accessibility issues
+4. Watch the reports in the console
+5. Hover over any of the "nodes affected" to highlight the screen content
+6. Click "restart" to do it all again
+
+Manual scan:
+
+1. At any time click "Scan document" to scan the entire DOM for accessibility issues
+
 # Usage - developer version
 
 The version below provides more control over usage.
