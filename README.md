@@ -42,6 +42,16 @@ Just open the browser and watch the scans each time content on the page changes.
 It does NOT persist onto the next page. If the next page is configured the same way, then the process repeats.
 
 
+## So you don't control the page source
+
+The scanning can be enabled on any page by pasting this script into the browser console. You may need to enable permissions to paste scripts first.
+
+```javascript
+  const axeContinuousOptions = { selectors: ["body"] }
+  { div = document.createElement("script"); div.src="https://www.musios.app/axe-continuous/axe-continuous-simple.js"; document.head.append(div) }
+```
+
+
 ## On-demand scan
 
 Perform a scan any time by running this in the browser console with any 
