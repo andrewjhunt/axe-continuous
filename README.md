@@ -18,7 +18,7 @@ Include the following in the `<head>`.
 
 ```
   <script src="https://cdn.jsdelivr.net/npm/axe-core@4.9.1/axe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/andrewjhunt/axe-continuous@main/axe-continuous.js"></script>
+  <script src="https://www.musios.app/axe-continuous/axe-continuous.js"></script>
 ```
 
 If you are modifying `axe-continuous` then replace the script link by the following with your path:
