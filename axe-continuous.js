@@ -6,9 +6,6 @@
 
 let axeDelayMsec = 250
 
-
-let axeDelayMsec = 250
-
 const axeOptions = {
 	runOnly: {
 		type: 'tag',
