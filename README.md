@@ -10,10 +10,31 @@ The purpose of wrapping the tool is:
 4. The report is returned by this library so that the user can handle as they wish
 
 
-# Usage
+# Usage - simple all-in-one package
 
+The "simple" packaging is the easiest way to get going. Add this script to your HTML pages.
+
+```
+  <script src="https://www.musios.app/axe-continuous/axe-continuous-simple.js"></script>
+```
+
+It does the following:
+
+1. Loads the scripts for `axe-continuous` and `axe-core`
+2. Starts `axe-continuous` configured to write output to the browser console
+3. Performs the first scan
+
+Just open the browser and watch the scans each time content on the page changes.
+
+It does persist onto the next. Instead process repeats.
+
+
+# Usage - developer version
+
+The version below provides more control over usage.
 
 ## Packages
+
 Include the following in the `<head>`.  
 
 ```
