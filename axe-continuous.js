@@ -6,7 +6,7 @@
 
 let options = {}
 
-let axeDebug = true
+let axeDebug = false
 
 function runAxe(node) {
 	if (axeDebug) console.debug("running the Axe scan", node)
@@ -72,6 +72,8 @@ function delayRun(newCommonAncestor) {
 
 
 function axeContinuous(root, axeDelayMsec, axeOptions, scanCompleteCallback) {
+	if (!root) throw new Error(`node is not valid Node or NodeList`)
+
 	options.axeDelayMsec = axeDelayMsec
 	options.axeOptions = axeOptions
 	options.scanCompleteCallback = scanCompleteCallback
@@ -99,7 +101,10 @@ function axeContinuous(root, axeDelayMsec, axeOptions, scanCompleteCallback) {
 
 	if (root instanceof Node) root = [root]
 
+  console.log(root)
+
 	root.forEach(node => {
+		console.log("attaching", node)
 		// Start observing the document body for changes
 		observer.observe(node, {
 			childList: true,
