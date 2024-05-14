@@ -4,62 +4,63 @@
 // Copyright Andrew Hunt 2024
 // License MIT 2.0
 
-let axeDelayMsec = 250
+let options = {}
 
-const axeOptions = {
-	runOnly: {
-		type: 'tag',
-		values: ['wcag2a']
-	}
-}
+let axeDebug = true
 
 function runAxe(node) {
-	console.debug("running the Axe scan", node)
+	if (axeDebug) console.debug("running the Axe scan", node)
 
 	setTimeout(() => {
-		axe.run(node, axeOptions, (err, results) => {
-			if (err) throw err
-
-			if (!results.violations.length) {
-				console.debug("No violations found")
-				if (true) {
-					Toastify({
-						text: "OK",
-						style: { background: "green" },
-						duration: 3000
-					}).showToast()
-				}
-				return;
+		axe.run(node, options.axeOptions, (err, results) => {
+			if (err) {
+				console.error(err)
+				throw err
 			}
 
-			results.violations.forEach(v => {
-				const colorMap = {
-					"critical": "red",
-					"serious": "orange",
-					"moderate": "yellow",
-					"minor": "yellow"
-				}
+			options.scanCompleteCallback(results.violations.length>0, results)
+			
+			// if (!results.violations.length) {
+			// 	if (axeDebug) console.debug("No violations found")
+				
+			// 	if (true) {
+			// 		Toastify({
+			// 			text: "OK",
+			// 			style: { background: "green" },
+			// 			duration: 3000
+			// 		}).showToast()
+			// 	}
+			// 	return;
+			// }
 
-				console.warn(`--- Accessibility issue: "${v.help}" - ${v.impact} - ${v.helpUrl}`)
-				console.warn(v)
-				// console.warn("doc", v.helpUrl)
+			// results.violations.forEach(v => {
+			// 	const colorMap = {
+			// 		"critical": "red",
+			// 		"serious": "orange",
+			// 		"moderate": "yellow",
+			// 		"minor": "yellow"
+			// 	}
 
-				v.nodes.forEach((node, idx) => {
-					// console.debug(node.target)
-					document.querySelectorAll(node.target).forEach(node => {
-						// node.style.border = `solid 1px ${colorMap[v.impact]}`
-						console.warn(idx, `Axe ${v.impact}`, node)
-					})
-				})
+			// 	console.warn(`--- Accessibility issue: "${v.help}" - ${v.impact} - ${v.helpUrl}`)
+			// 	console.warn(v)
+			// 	// console.warn("doc", v.helpUrl)
 
-				Toastify({
-					text: v.impact + ": " + v.help,
-					style: { background: colorMap[v.impact] },
-					duration: -1,
-					close: true
-				}).showToast()
+			// 	v.nodes.forEach((node, idx) => {
+			// 		// console.debug(node.target)
+			// 		document.querySelectorAll(node.target).forEach(node => {
+			// 			// node.style.border = `solid 1px ${colorMap[v.impact]}`
+			// 			console.warn(idx, `Axe ${v.impact}`, node)
+			// 		})
+			// 	})
 
-			})
+			// 	Toastify({
+			// 		text: v.impact + ": " + v.help,
+			// 		style: { background: colorMap[v.impact] },
+			// 		duration: -1,
+			// 		close: true
+			// 	}).showToast()
+
+			// })
 		})
 	})
 }
@@ -96,7 +97,7 @@ function delayRun(newCommonAncestor) {
 	if (lastTimeoutId)
 		clearTimeout(lastTimeoutId)
 
-	if (commonAncestor) console.debug(`finding common ancestor with the queued items`)
+	if (commonAncestor && axeDebug) console.debug(`finding common ancestor with the queued items`)
 
 	commonAncestor = commonAncestor
 		? findCommonAncestor([newCommonAncestor], [commonAncestor])
@@ -108,12 +109,14 @@ function delayRun(newCommonAncestor) {
 		commonAncestor = null
 
 		runAxe(_commonAncestor)
-	}, axeDelayMsec)
+	}, options.axeDelayMsec)
 }
 
 
-function axeContinuous(root, delay = axeDelayMsec) {
-	axeDelayMsec = delay
+function axeContinuous(root, axeDelayMsec, axeOptions, scanCompleteCallback) {
+	options.axeDelayMsec = axeDelayMsec
+	options.axeOptions = axeOptions
+	options.scanCompleteCallback = scanCompleteCallback
 
 	// Setup the MutationObserver
 	const observer = new MutationObserver(mutations => {
@@ -128,7 +131,7 @@ function axeContinuous(root, delay = axeDelayMsec) {
 			}
 		});
 
-		console.debug(`${affectedNodes.length} nodes changed`)
+		if (axeDebug) console.debug(`${affectedNodes.length} nodes changed`)
 
 		const commonAncestor = findCommonAncestor(affectedNodes);
 
@@ -148,4 +151,4 @@ function axeContinuous(root, delay = axeDelayMsec) {
 	})
 }
 
-console.debug("axe-continuous loaded")
+if (axeDebug) console.debug("axe-continuous loaded")
