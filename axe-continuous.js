@@ -19,48 +19,6 @@ function runAxe(node) {
 			}
 
 			options.scanCompleteCallback(results.violations.length>0, results)
-			
-			// if (!results.violations.length) {
-			// 	if (axeDebug) console.debug("No violations found")
-				
-			// 	if (true) {
-			// 		Toastify({
-			// 			text: "OK",
-			// 			style: { background: "green" },
-			// 			duration: 3000
-			// 		}).showToast()
-			// 	}
-			// 	return;
-			// }
-
-			// results.violations.forEach(v => {
-			// 	const colorMap = {
-			// 		"critical": "red",
-			// 		"serious": "orange",
-			// 		"moderate": "yellow",
-			// 		"minor": "yellow"
-			// 	}
-
-			// 	console.warn(`--- Accessibility issue: "${v.help}" - ${v.impact} - ${v.helpUrl}`)
-			// 	console.warn(v)
-			// 	// console.warn("doc", v.helpUrl)
-
-			// 	v.nodes.forEach((node, idx) => {
-			// 		// console.debug(node.target)
-			// 		document.querySelectorAll(node.target).forEach(node => {
-			// 			// node.style.border = `solid 1px ${colorMap[v.impact]}`
-			// 			console.warn(idx, `Axe ${v.impact}`, node)
-			// 		})
-			// 	})
-
-			// 	Toastify({
-			// 		text: v.impact + ": " + v.help,
-			// 		style: { background: colorMap[v.impact] },
-			// 		duration: -1,
-			// 		close: true
-			// 	}).showToast()
-
-			// })
 		})
 	})
 }
