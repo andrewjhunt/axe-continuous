@@ -6,6 +6,9 @@
 
 let axeDelayMsec = 250
 
+
+let axeDelayMsec = 250
+
 const axeOptions = {
 	runOnly: {
 		type: 'tag',
@@ -14,14 +17,15 @@ const axeOptions = {
 }
 
 function runAxe(node) {
-	// console.log("runAxe", node)
+	console.log("running the Axe scan", node)
 
 	setTimeout(() => {
 		axe.run(node, axeOptions, (err, results) => {
 			if (err) throw err
 
 			if (!results.violations.length) {
-				if (false) {
+				console.log("No violations found")
+				if (true) {
 					Toastify({
 						text: "OK",
 						style: { background: "green" },
@@ -95,6 +99,8 @@ function delayRun(newCommonAncestor) {
 	if (lastTimeoutId)
 		clearTimeout(lastTimeoutId)
 
+	if (commonAncestor) console.log(`finding common ancestor with the queued items`)
+
 	commonAncestor = commonAncestor
 		? findCommonAncestor([newCommonAncestor], [commonAncestor])
 		: newCommonAncestor
@@ -125,6 +131,8 @@ function axeContinuous(root, delay = axeDelayMsec) {
 			}
 		});
 
+		console.log(`${affectedNodes.length} nodes changed`)
+
 		const commonAncestor = findCommonAncestor(affectedNodes);
 
 		delayRun(commonAncestor)
@@ -142,3 +150,5 @@ function axeContinuous(root, delay = axeDelayMsec) {
 		});
 	})
 }
+
+
